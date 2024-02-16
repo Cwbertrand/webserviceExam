@@ -3,3 +3,16 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+api_login_check:
+    path: /api/login_check
+    methods: ['POST']
+token_refresh:
+    path: /api/token/refresh
+    controller: App\Controller\TokenRefreshController::refresh
+    methods: [POST]
+# config/routes.yaml
+options_route:
+    path: /api/some_endpoint
+    methods: [OPTIONS]
+    controller: App\Controller\OptionsController::handleOptions
+

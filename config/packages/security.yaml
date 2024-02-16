@@ -4,14 +4,45 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            lazy: true
-            provider: users_in_memory
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        refresh:
+            pattern: ^/api/token/refresh
+            stateless: true
+            jwt: ~
+        api:
+            pattern:   ^/api
+            stateless: true
+            jwt: ~
+    # firewalls:
+    #     dev:
+    #         pattern: ^/(_(profiler|wdt)|css|images|js)/
+    #         security: false
+    #     main:
+    #         lazy: true
+    #         provider: app_user_provider
+    #         custom_authenticator: App\Security\AppAuthenticator
+    #         logout:
+    #             path: app_logout
+    #             # where to redirect after logout
+    #             # target: app_any_route
+
+    #         remember_me:
+    #             secret: '%kernel.secret%'
+    #             lifetime: 604800
+    #             path: /
+    #             always_remember_me: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
